@@ -14,6 +14,10 @@ export default function Page() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const router = useRouter()
     const session = useSession();
+    if (session.data) {
+        router.push('/');
+    }
+    console.log(session);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrorMessage('');

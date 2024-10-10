@@ -21,6 +21,7 @@ import {
 import * as React from 'react';
 import toast from 'react-hot-toast';
 import { slideIn } from '@/utils/motion';
+import { useSession } from 'next-auth/react';
 
 const formSchema = z.object({
     name: z.string().min(5, 'Name must be at least 5 characters').max(50, 'Name must be at most 50 characters'),
@@ -74,7 +75,8 @@ export default function EventPage() {
             }
         );
     }
-
+    const session = useSession();
+    console.log(session);
     return (
         <motion.div variants={slideIn('top', 'spring', 0.5, 0.5)} initial="hidden" animate="visible" exit="hidden"
             className="mt-20 px-40 justify-between w-full flex">
