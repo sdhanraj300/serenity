@@ -75,8 +75,8 @@ export default function EventPage() {
             }
         );
     }
-    const session = useSession();
-    console.log(session);
+    const {data:session} =useSession();
+    console.log("hello");
     return (
         <motion.div variants={slideIn('top', 'spring', 0.5, 0.5)} initial="hidden" animate="visible" exit="hidden"
             className="mt-20 px-40 justify-between w-full flex">

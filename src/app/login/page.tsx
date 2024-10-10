@@ -17,7 +17,7 @@ export default function Page() {
     if (session.data) {
         router.push('/');
     }
-    console.log(session);
+    console.log( session);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrorMessage('');

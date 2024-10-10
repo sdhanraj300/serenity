@@ -32,8 +32,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         const user = await prisma.user.findFirst({
           where: { email },
         });
-        console.log("User:", user);
-        console.log("Password:",password);
+        // console.log("User:", user);
+        // console.log("Password:",password);
         if (!user || !user.password) {
           throw new Error("Invalid credentials");
         }
@@ -101,6 +101,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (token?.id) {
         session.user.id = token.id as string;
       }
+      // console.log("Session:", session);
       return session;
     },
   },
@@ -108,13 +109,4 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   session: {
     strategy: "jwt",
   },
-
-  // events: {
-  //   async signIn(message) {
-  //     console.log("User signed in:", message);
-  //   },
-  //   async signOut(message) {
-  //     console.log("User signed out:", message);
-  //   },
-  // },
 });
