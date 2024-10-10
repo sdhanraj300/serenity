@@ -2,7 +2,6 @@
 import React, { useEffect, useRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, Clock, MapPin, Users } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useMotionValue, motion, useMotionTemplate } from 'framer-motion';
 import Link from 'next/link';
 
@@ -19,7 +18,6 @@ interface Event {
 }
 
 const Cards = ({ event }: { event: Event }) => {
-    const router = useRouter();
     const offsetX = useMotionValue(-100);
     const offsetY = useMotionValue(-100);
     const maskImage = useMotionTemplate`radial-gradient(100px 100px at ${offsetX}px ${offsetY}px, black, transparent)`;

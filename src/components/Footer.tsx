@@ -35,7 +35,7 @@ const Footer = () => {
                 </div>
                 <div className="flex justify-between relative group gap-4 ">
                     {links.map((link, index) => (
-                        <div className="relative group">
+                        <div key={index} className="relative group">
                             <Link key={index} href="#" className="text-gray-300 hover:text-white">{link}</Link>
                             <div className={`absolute inset-x-0 bottom-0 h-0.5 bg-purple-600 transition-transform duration-200 scale-x-0 hover:scale-x-100 group-hover:scale-x-100'}`}
                             />

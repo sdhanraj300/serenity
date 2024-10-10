@@ -1,4 +1,3 @@
-//list of all events created by a user
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 export async function GET(

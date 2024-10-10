@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   const body = await req.json();
   const { guestList, eventId } = body;
   console.log("Guest List:", guestList);

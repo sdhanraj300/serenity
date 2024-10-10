@@ -21,9 +21,7 @@ export default function Page() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setErrorMessage(''); // Clear any existing error message
-
-        // Show a toast promise for login progress, success, and error
+        setErrorMessage('');
         const loginPromise = signIn("credentials", {
             redirect: false,
             email,
@@ -35,7 +33,7 @@ export default function Page() {
             {
                 loading: 'Logging in...',
                 success: (data) => {
-                    if (data?.error) throw new Error(data.error); // Prevent showing success if login failed
+                    if (data?.error) throw new Error(data.error); 
                     return 'Logged in successfully';
                 },
                 error: (err) => {
@@ -49,15 +47,15 @@ export default function Page() {
             const result = await loginPromise;
 
             if (result?.error) {
-                throw new Error(result.error); // Ensure error handling for login failures
+                throw new Error(result.error);
             } else {
-                router.push('/'); // Redirect on successful login
+                router.push('/');
             }
         } catch (error) {
             console.error("Login error:", error);
         } finally {
-            setEmail(''); // Clear email input
-            setPassword(''); // Clear password input
+            setEmail(''); 
+            setPassword('');
         }
     };
 
@@ -127,7 +125,7 @@ export default function Page() {
                             Sign In
                         </Button>
                         <Link href="/signup">
-                            <p className="text-white text-lg underline">Don't have an account? Sign up</p>
+                            <p className="text-white text-lg underline">Don&apos;t have an account? Sign up</p>
                         </Link>
                     </div>
                 </form>

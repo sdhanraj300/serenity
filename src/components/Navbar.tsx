@@ -5,7 +5,6 @@ import { LogOut, Menu, X } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
-import Link from 'next/link';
 
 const Navbar = () => {
     const path = usePathname();

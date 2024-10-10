@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -48,7 +48,9 @@ const Page = () => {
                 setError(err.message);
             }
         };
-
+        if (error) {
+            toast.error(error);
+        }
         if (id) {
             fetchEvents();
         }
@@ -65,7 +67,7 @@ const Page = () => {
             {eventData.length === 0 && <div>No events found.</div>}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {eventData.map((event) => (
-                    <Cards event={event} key={event.id}/>
+                    <Cards event={event} key={event.id} />
                 ))}
             </div>
         </div>

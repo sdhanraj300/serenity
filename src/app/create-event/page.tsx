@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import img from '@/assets/cat-bday-wine.jpeg';
-import { animate, motion, stagger } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
     Form,
     FormControl,
@@ -19,12 +19,9 @@ import {
     FormMessage
 } from '@/components/ui/form';
 import * as React from 'react';
-import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { imageVariants, slideIn } from '@/utils/motion';
-export interface IEventPageProps {
-}
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { slideIn } from '@/utils/motion';
+
 const formSchema = z.object({
     name: z.string().min(5, 'Name must be at least 5 characters').max(50, 'Name must be at most 50 characters'),
     description: z.string().min(5, 'Description must be at least 5 characters').max(500, 'Description must be at most 500 characters'),
@@ -36,7 +33,7 @@ const formSchema = z.object({
     additionalNotes: z.string().max(500, 'Additional notes must be at most 500 characters').optional()
 });
 
-export default function EventPage(props: IEventPageProps) {
+export default function EventPage() {
     const router = useRouter();
     const form = useForm({
         resolver: zodResolver(formSchema),
