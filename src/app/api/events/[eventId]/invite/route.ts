@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
       },
     });
     const emailPromises = guestListForMails.map(async ({ id, email }) => {
-      const rsvpLink = `https:serenityevents.vercel.app/${event.id}/${id}`; // Unique RSVP link
+      const rsvpLink = `https:serenityevents.vercel.app/rsvp/${event.id}/${id}`;
 
       await transporter.sendMail({
         from: "dhanraj02025@gmail.com",
