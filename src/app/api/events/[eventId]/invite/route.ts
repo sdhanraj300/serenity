@@ -104,13 +104,14 @@ export async function POST(req: NextRequest) {
         </head>
         <body>
             <div class="container">
-                <h1>You Are Invited to an Event!</h1>
+                <h1>Yayy! You Are Invited to an Party!</h1>
                 <p>Dear Guest,</p>
                 <p>We are thrilled to invite you to <strong>${event?.name}</strong>.</p>
                 <p>The event will take place on <strong>${event.date}</strong> at <strong>${event.location}</strong>.</p>
                 <p>The Event will start at <strong>${event.startTime}</strong> and end at <strong>${event.endTime}</strong>.</p>
                 <p>We hope to see you there!</p>
-                <a href="${rsvpLink}" class="button">RSVP Now</a>
+                <button>RSVP from the link below</button>
+                <p class="button">${rsvpLink}</p>
                 <div class="footer">
                     <p>Best Regards,</p>
                     <p>Serenity Events</p>
