@@ -77,7 +77,10 @@ export default function EventPage() {
         );
     }
     const { data: session } = useSession();
-    console.log("hello");
+    if (!session) {
+        router.push('/login');
+        return null;
+    }
     return (
         <motion.div variants={slideIn('top', 'spring', 0.5, 0.5)} initial="hidden" animate="visible" exit="hidden"
             className="mt-20 items-center justify-center gap-10 w-full flex-col md:flex-row flex">
