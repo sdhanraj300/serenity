@@ -3,7 +3,11 @@ import prisma from "@/lib/prisma";
 import { getToken } from "next-auth/jwt";
 
 export async function POST(req: NextRequest) {
-  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+  const token = await getToken({
+    req,
+    secret: process.env.AUTH_SECRET,
+    secureCookie: process.env.NODE_ENV === "production",
+  });
   if (!token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

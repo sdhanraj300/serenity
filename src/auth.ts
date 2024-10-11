@@ -101,7 +101,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (token?.id) {
         session.user.id = token.id as string;
       }
-      // console.log("Session:", session);
       return session;
     },
   },
