@@ -9,23 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from '@/components/ui/input';
 import toast from 'react-hot-toast';
 import Papa from 'papaparse';
-
-
-
-interface Event {
-    id: string;
-    name: string;
-    description: string;
-    type: string;
-    date: string;
-    startTime: string;
-    endTime: string;
-    guestList: string[];
-    location: string;
-    additionalNotes: string;
-    userId: string;
-    invitationSent?: boolean;
-}
+import { Event } from '@prisma/client';
 
 const EventDetailsPage = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -43,8 +27,8 @@ const EventDetailsPage = () => {
         location: '',
         additionalNotes: '',
         userId: '',
+        invitationSent: false,
     });
-    const [forceUpdate, setForceUpdate] = useState(0);
 
     const { id: eventId } = useParams();
     const router = useRouter();
@@ -74,7 +58,7 @@ const EventDetailsPage = () => {
         fetchEventDetails();
     }, [eventId]);
 
-    const formatDate = (dateString: string) => {
+    const formatDate = (dateString: Date) => {
         return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
@@ -202,7 +186,6 @@ const EventDetailsPage = () => {
             ...prev,
             guestList: prev.guestList.filter((_, i) => i !== index)
         }));
-        setForceUpdate(forceUpdate + 1);
     }
     if (loading) return <div>Loading...</div>;
     if (!event) return <div>No event found</div>;
