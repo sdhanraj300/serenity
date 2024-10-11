@@ -128,7 +128,7 @@ const Page = () => {
             <span className='rounded-full w-15 h-15'>
               <X className="text-gray-300" />
             </span>
-            <p className='text-xl font-bold'>Can't Go</p>
+            <p className='text-xl font-bold'>Can&apos;t Go</p>
           </Button>
         </div>
       </div>
