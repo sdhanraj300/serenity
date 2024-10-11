@@ -24,6 +24,7 @@ interface Event {
     location: string;
     additionalNotes: string;
     userId: string;
+    invitationSent?: boolean;
 }
 
 const EventDetailsPage = () => {
@@ -94,8 +95,6 @@ const EventDetailsPage = () => {
             toast.error('Please select a date');
             return;
         }
-        console.log("eventData:", eventData);
-        console.log("event", event);
         const updatedEventData = {
             ...eventData,
             name: eventData?.name || event?.name,
@@ -108,7 +107,6 @@ const EventDetailsPage = () => {
             type: eventData?.type || event?.type,
             guestList: eventData?.guestList,
         };
-        console.log("updatedEventData:", updatedEventData);
         toast.promise(
             fetch(`/api/events/${eventId}`, {
                 method: 'PATCH',
@@ -116,7 +114,6 @@ const EventDetailsPage = () => {
                 body: JSON.stringify(updatedEventData),
             }).then(res => {
                 if (!res.ok) throw new Error('Failed to update event');
-                console.log("res:", res);
                 return res.json();
             }),
             {
@@ -131,6 +128,10 @@ const EventDetailsPage = () => {
     };
 
     const handleDelete = async () => {
+        if (event?.invitationSent === true) {
+            toast.error('You cannot delete an event after sending invites');
+            return;
+        }
         toast.promise(
             fetch(`/api/events/${eventId}`, {
                 method: 'DELETE',
@@ -153,7 +154,6 @@ const EventDetailsPage = () => {
         return re.test(String(email).toLowerCase());
     };
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        // console.log(eventData);
         const file = e.target.files?.[0];
         if (!file) return;
         Papa.parse(file, {
@@ -171,9 +171,7 @@ const EventDetailsPage = () => {
                 }));
                 if (inValidEmails.length > 1) {
                     toast.error('Invalid emails found in the CSV file');
-                    console.log('Invalid emails:', inValidEmails);
                 }
-                console.log('Valid emails:', validEmails);
                 toast.success('Emails added successfully');
             }
         }
@@ -188,7 +186,6 @@ const EventDetailsPage = () => {
                     ...new Set([...prev.guestList, ...newEmails])
                 ]
             }));
-            // setInputValue('');
         }
     };
     const [inputValue, setInputValue] = useState('');
@@ -197,50 +194,67 @@ const EventDetailsPage = () => {
         setInputValue(e.target.value);
     };
     const handleRemoveGuest = (index: number) => {
+        if (event?.invitationSent === true) {
+            toast.error('You cannot remove guests after sending invites');
+            return;
+        }
         setEventData(prev => ({
             ...prev,
             guestList: prev.guestList.filter((_, i) => i !== index)
         }));
         setForceUpdate(forceUpdate + 1);
-        console.log(eventData);
     }
-    useEffect(() => {
-        console.log("Guest List Updated", eventData.guestList);
-    }, [eventData.guestList]);
     if (loading) return <div>Loading...</div>;
     if (!event) return <div>No event found</div>;
     const handleInvite = async () => {
-        if (eventData.guestList.length === 0) {
-            toast.error('Please add guests to invite');
-            return;
-        }
-        const finalEventId = Array.isArray(eventId) ? eventId[0] : eventId;
-        const emailData = {
-            guestList: eventData.guestList,
-            eventId: finalEventId,
-        }
-        console.log(emailData);
-        toast.promise(
-            fetch(`/api/events/${eventId}/invite`, {
+        try {
+            if (eventData.guestList.length === 0) {
+                toast.error('Please add guests to invite');
+                return;
+            }
+
+            const finalEventId = Array.isArray(eventId) ? eventId[0] : eventId;
+            const emailData = {
+                guestList: eventData.guestList,
+                eventId: finalEventId,
+            };
+            // First Promise: Send invites
+            const emailPromise = fetch(`/api/events/${finalEventId}/invite`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(emailData),
             }).then(res => {
                 if (!res.ok) throw new Error('Failed to send email');
                 return res.json();
-            }),
-            {
-                loading: 'Sending emails...',
-                success: () => {
-                    return 'Emails sent successfully!';
-                },
-                error: 'Failed to send emails'
-            }
-        );
-    }
+            });
+
+            // Second Promise: Update event status
+            const updatePromise = fetch(`/api/events/${finalEventId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ invitationSent: true }),
+            }).then(res => {
+                if (!res.ok) throw new Error('Failed to update event status');
+                router.push('/my-events');
+                return res.json();
+            });
+            toast.promise(
+                Promise.all([emailPromise, updatePromise]),
+                {
+                    loading: 'Sending invites...',
+                    success: 'Invites sent successfully!',
+                    error: 'Failed to send invites'
+                }
+            );
+            await Promise.all([emailPromise, updatePromise]);
+
+        } catch (error) {
+            console.error('Error in handleInvite:', error);
+            toast.error('An error occurred while sending invites');
+        }
+    };
     return (
         <div className="p-6 relative max-w-5xl rounded-xl hover:shadow-md hover:shadow-white transition-all duration-700 bg-black mx-auto mt-20">
-            {/* Edit Button */}
             <div className="absolute right-5 hover:scale-105 hover:underline">
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
                     <DialogTrigger asChild>
@@ -323,7 +337,6 @@ const EventDetailsPage = () => {
                 </Dialog>
             </div>
 
-            {/* Event Details Card */}
             <Card className="shadow-lg text-gray-300 rounded-xl">
                 <CardHeader className="text-center">
                     <CardTitle className="text-3xl font-bold">{event.name}</CardTitle>
@@ -370,14 +383,17 @@ const EventDetailsPage = () => {
                         </div>
                         <div>
                             <Dialog>
-                                <DialogTrigger asChild>
-                                    <Button
-                                        variant="default"
-                                        className="rounded-full bg-blue-600 hover:bg-blue-700"
-                                    >
-                                        Add Guests
-                                    </Button>
-                                </DialogTrigger>
+                                {
+                                    event.invitationSent ? "" :
+                                        <DialogTrigger asChild>
+                                            <Button
+                                                variant="default"
+                                                className="rounded-full bg-blue-600 hover:bg-blue-700"
+                                            >
+                                                Add Guests
+                                            </Button>
+                                        </DialogTrigger>
+                                }
                                 <DialogContent className="bg-black text-white p-6 max-w-lg mx-auto rounded-lg shadow-lg">
                                     <DialogHeader>
                                         <DialogTitle className="text-2xl font-semibold">
@@ -426,13 +442,15 @@ const EventDetailsPage = () => {
                     <div className="">
                         <p className="text-gray-400">{event.additionalNotes}</p>
                     </div>
-                    <div className="">
-                        <Button onClick={handleInvite} className='rounded-full bg-green-400 text-gray-900 hover:bg-green-500 transition-all duration-300 hover:scale-105 '>Invite These Guests</Button>
-                    </div>
+                    {
+                        event.invitationSent ? "" :
+                            <div className="">
+                                <Button onClick={handleInvite} className='rounded-full bg-green-400 text-gray-900 hover:bg-green-500 transition-all duration-300 hover:scale-105 '>Invite These Guests</Button>
+                            </div>
+                    }
                 </CardContent>
             </Card>
 
-            {/* Theme Suggestion Section */}
             <div className="text-gray-300 mt-10">
                 <h2 className="text-2xl font-semibold">
                     Write a theme and we will suggest you something great.
@@ -453,7 +471,6 @@ const EventDetailsPage = () => {
                     Submit
                 </Button>
 
-                {/* Delete Dialog */}
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button

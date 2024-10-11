@@ -4,18 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, Clock, MapPin, Users } from 'lucide-react';
 import { useMotionValue, motion, useMotionTemplate } from 'framer-motion';
 import Link from 'next/link';
-
-interface Event {
-    id: string;
-    name: string;
-    description: string;
-    type: string;
-    date: string;
-    startTime: string;
-    endTime: string;
-    guestList: string[];
-    location: string;
-}
+import { Event } from '@prisma/client';
+const formatDate = (dateString: Date) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+};
 
 const Cards = ({ event }: { event: Event }) => {
     const offsetX = useMotionValue(-100);
@@ -44,13 +40,6 @@ const Cards = ({ event }: { event: Event }) => {
         }
     }, [offsetX, offsetY]);
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    };
 
     return (
         <Link href={`/my-events/${event.id}`}

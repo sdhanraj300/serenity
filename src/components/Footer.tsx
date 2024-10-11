@@ -22,13 +22,13 @@ const Footer = () => {
         "Privacy Policy",
     ]
     return (
-        <motion.div className='mt-5'>
+        <motion.div className='mt-5 bg-black'>
             <hr className="border-gray-400 mx-5" />
             <motion.footer
                 initial="hidden"
                 animate="visible"
                 variants={footerVariants}
-                className="bg-transparent flex justify-between mx-10 text-gray-300 text-center py-4"
+                className="bg-transparent flex flex-col md:flex-row gap-4 bg-black justify-between mx-10 text-gray-300 text-center py-4"
             >
                 <div className="">
                     <p>&copy; 2024 Serenity. All rights reserved.</p>

@@ -121,7 +121,7 @@ const Navbar = () => {
 
             {/* Desktop Menu */}
             <ul className="hidden md:flex font-bold items-center space-x-2 md:space-x-6">
-                {['Home', 'About', 'Contact', 'My Events', 'Create Event'].map((item) => (
+                {['Home', 'About' , 'My Events', 'Create Event'].map((item) => (
                     <li key={item} className="relative group">
                         <button
                             onClick={() => {

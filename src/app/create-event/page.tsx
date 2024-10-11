@@ -54,6 +54,7 @@ export default function EventPage() {
     const onSubmit = async (data: any) => {
         const parsedData = {
             ...data,
+            invitationSent: false,
             date: new Date(data.date),
         }
         console.log(parsedData);
@@ -75,20 +76,19 @@ export default function EventPage() {
             }
         );
     }
-    const {data:session} =useSession();
+    const { data: session } = useSession();
     console.log("hello");
     return (
         <motion.div variants={slideIn('top', 'spring', 0.5, 0.5)} initial="hidden" animate="visible" exit="hidden"
-            className="mt-20 px-40 justify-between w-full flex">
-            <div className="p-6 w-[50%] bg-black/40 text-gray-300 shadow-md rounded-[28px]">
-                {/* <h2 className="text-2xl font-bold mb-6 text-center text-gray-300">Create a New Event</h2> */}
+            className="mt-20 items-center justify-center gap-10 w-full flex-col md:flex-row flex">
+            <div className="p-6 w-full md:w-[50%] bg-black/40 text-gray-300 shadow-md rounded-[28px]">
                 <Form {...form}>
                     <form action="POST" onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         {/* Event Name */}
                         <FormField control={form.control} name="name" render={({ field }) => (
                             <FormItem className=''>
                                 <FormControl className=''>
-                                    <Input {...field} id="name" placeholder="Give Your Event A Name..." className="mt-1 py-8 font-bold bg-black/50 text-4xl block border-none shadow-sm" />
+                                    <Input {...field} id="name" placeholder="Give Your Event A Name..." className="mt-1 py-8 font-bold bg-black/50 text-2xl md:text-4xl block border-none shadow-sm" />
                                 </FormControl>
                                 <FormMessage className="text-red-500">{errors.name?.message}</FormMessage>
                             </FormItem>

@@ -113,10 +113,10 @@ export default function Page() {
                         </div>
                     )}
 
-                    <div className="flex items-center gap-2 md:justify-between pt-4">
+                    <div className="flex items-center gap-2 justify-between pt-4">
                         <Button
                             type="submit"
-                            className="px-8 py-6 text-lg bg-green-400 hover:bg-green-700 text-white rounded-xl transition-all duration-300 backdrop-blur-sm"
+                            className="px-8 py-6 text-lg bg-green-400 hover:bg-green-700 text-gray-900 rounded-xl transition-all duration-300 backdrop-blur-sm"
                         >
                             Sign In
                         </Button>
@@ -129,7 +129,7 @@ export default function Page() {
                 <div className="mt-10">
                     <Button
                         onClick={handleGoogleSignIn}
-                        className="w-full px-8 py-6 text-lg bg-blue-500 hover:bg-blue-700 text-white rounded-xl transition-all duration-300 backdrop-blur-sm"
+                        className="w-full px-8 py-6 text-lg bg-blue-500 hover:bg-blue-700 text-black font-bold rounded-xl transition-all duration-300 backdrop-blur-sm"
                     >
                         Sign in with Google
                     </Button>

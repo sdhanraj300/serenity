@@ -48,6 +48,7 @@ export async function PATCH(
     endTime,
     location,
     guestList,
+    invitationSent,
   } = body;
   const updateEvent = await prisma.event.update({
     where: {
@@ -63,6 +64,7 @@ export async function PATCH(
       endTime,
       location,
       guestList,
+      invitationSent,
     },
   });
   if (!updateEvent) {

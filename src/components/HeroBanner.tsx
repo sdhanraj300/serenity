@@ -208,7 +208,7 @@ const HeroBanner = () => {
                         transition: {
                             duration: 1,
                             ease: "easeOut",
-                            delay: 0.5,
+                            delay: 0.2,
                             when: "beforeChildren",
                             staggerChildren: 0.2,
                         },

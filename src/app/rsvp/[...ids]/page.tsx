@@ -84,7 +84,7 @@ const Page = () => {
   }
   if (guest?.status === 'DECLINED') {
     return (
-      <div className='flex flex-col items-center justify-center gap-10'>
+      <div className='flex flex-col items-center mt-20 justify-center gap-10'>
         <h1 className='text-4xl text-red-600 font-bold'>You Have Already Declined The Invitation!</h1>
         <Image src={img} className='w-full md:mt-10 mt-[-100px] max-w-[500px]' alt='party' />
       </div>

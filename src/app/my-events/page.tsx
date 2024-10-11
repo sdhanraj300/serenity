@@ -4,17 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import Cards from './cards';
-interface Event {
-    id: string;
-    name: string;
-    description: string;
-    type: string;
-    date: string;
-    startTime: string;
-    endTime: string;
-    guestList: string[];
-    location: string;
-}
+import { Event } from '@prisma/client';
 
 const Page = () => {
     const session = useSession();
@@ -62,7 +52,7 @@ const Page = () => {
 
 
     return (
-        <div className="p-6 max-w-7xl mt-20 mx-auto">
+        <div className="p-6 min-h-screen max-w-7xl mt-20 mx-auto">
             <h1 className="text-3xl font-bold mb-6">My Events</h1>
             {eventData.length === 0 && <div>No events found.</div>}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
