@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from '@/components/ui/input';
 import toast from 'react-hot-toast';
 import Papa from 'papaparse';
-import { Event } from '@prisma/client';
+import { Event, Guest } from '@prisma/client';
 
 const EventDetailsPage = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -29,9 +29,25 @@ const EventDetailsPage = () => {
         userId: '',
         invitationSent: false,
     });
-
+    const [guestStatus, setGuestStatus] = useState([]);
     const { id: eventId } = useParams();
     const router = useRouter();
+    useEffect(() => {
+        async function fetchGuestStatus() {
+            try {
+                const response = await fetch(`/api/events/${eventId}/invite`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch guest status');
+                }
+                const data = await response.json();
+                console.log('Guest status from data:', data.guests);
+                setGuestStatus(data.guests);
+            } catch (err) {
+                console.error('Error fetching guest status:', err);
+            }
+        }
+        fetchGuestStatus();
+    }, [eventId]);
 
     useEffect(() => {
         const fetchEventDetails = async () => {
@@ -57,7 +73,9 @@ const EventDetailsPage = () => {
 
         fetchEventDetails();
     }, [eventId]);
-
+    useEffect(() => {
+        console.log('Updated guest status:', guestStatus);
+    }, [guestStatus]);
     const formatDate = (dateString: Date) => {
         return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -221,6 +239,7 @@ const EventDetailsPage = () => {
                 router.push('/my-events');
                 return res.json();
             });
+            //Third promise : Update the rsvp status of the guests
             toast.promise(
                 Promise.all([emailPromise, updatePromise]),
                 {
@@ -351,16 +370,25 @@ const EventDetailsPage = () => {
                         </div>
                         <div>
                             {eventData.guestList.map((guest, index) => (
-                                <div key={index} className="flex justify-between items-center text-gray-400">
+                                <div key={index} className="flex justify-between items-center text-gray-400 mb-2">
                                     <span>
-                                        {index === event.guestList.length - 1 ? guest : `${guest}, `}
+                                        {guest}
                                     </span>
-                                    <Button
-                                        onClick={() => handleRemoveGuest(index)}
-                                        className='text-red-600 hover:scale-105 transition-all duration-300 hover:underline hover:text-red-800'>
-                                        Remove
-                                        <Trash className='h-5 w-5' />
-                                    </Button>
+                                    {guestStatus?.length > 0 ? (
+                                        guestStatus.map((guest: Guest) => (
+                                            <span key={index} className="text-sm font-medium">
+                                                {guest?.status}
+                                            </span>
+                                        ))
+                                    ) : (
+                                        <Button
+                                            onClick={() => handleRemoveGuest(index)}
+                                            className='text-red-600 hover:scale-105 transition-all duration-300 hover:underline hover:text-red-800'
+                                        >
+                                            Remove
+                                            <Trash className='h-5 w-5 ml-2' />
+                                        </Button>
+                                    )}
                                 </div>
                             ))}
                         </div>

@@ -131,3 +131,21 @@ export async function POST(req: NextRequest) {
     await prisma.$disconnect();
   }
 }
+
+export async function GET(
+  req: NextRequest,
+  { params: { eventId } }: { params: { eventId: string } }
+) {
+  try {
+    console.log("Event ID:", eventId);
+    const guests = await prisma.guest.findMany({
+      where: {
+        eventId,
+      },
+    });
+    console.log("Guests:", guests);
+    return NextResponse.json({ guests }, { status: 200 });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}
