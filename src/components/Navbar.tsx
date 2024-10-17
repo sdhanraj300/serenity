@@ -58,7 +58,7 @@ const Navbar = () => {
             {isMobileMenuOpen && (
                 <div className="fixed top-1 pb-10 rounded-[16px] left-0 bg-black w-full z-50 flex flex-col justify-center items-center md:hidden">
                     <ul className="space-y-6 text-center">
-                        {['Home', 'About', 'Contact', 'My Events', 'Create Event'].map((item) => (
+                        {['Home', 'About', 'My Events', 'Create Event'].map((item) => (
                             <li key={item} className="text-xl text-white">
                                 <button
                                     onClick={() => {

@@ -77,7 +77,7 @@ const Page = () => {
     return (
       <div className='flex flex-col items-center justify-center mt-20 gap-10'>
         <h1 className='text-4xl text-green-600 font-bold'>You Have Already Accepted The Invitation!</h1>
-        <Image src={event.coverImage} className='w-full md:mt-10 mt-[-100px] max-w-[500px]' alt='party' />
+        <Image src={event.coverImage} height={500} width={500} className='md:mt-10 mt-[-100px]' alt='party' />
       </div>
     );
   }
@@ -85,7 +85,7 @@ const Page = () => {
     return (
       <div className='flex flex-col items-center mt-20 justify-center gap-10'>
         <h1 className='text-4xl text-red-600 font-bold'>You Have Already Declined The Invitation!</h1>
-        <Image src={event.coverImage} className='w-full md:mt-10 mt-[-100px] max-w-[500px]' alt='party' />
+        <Image src={event.coverImage} height={500} width={500} className='md:mt-10 mt-[-100px]' alt='party' />
       </div>
     );
   }
@@ -115,7 +115,7 @@ const Page = () => {
         <span>{event.additionalNotes}</span>
       </div>
       <div className="">
-        <Image src={event.coverImage} className='w-full md:mt-10 mt-[-100px] max-w-[500px]' alt='party' />
+        <Image src={event.coverImage} className='md:mt-10 mt-[-100px]' height={500} width={500} alt='party' />
         <div className="flex justify-center items-center gap-10 mt-10 flex-wrap">
           <Button onClick={() => handleClick("Yes")} className='flex bg-black flex-col w-40 h-40 hover:bg-gray-700 transition-all duration-300 rounded-full'>
             <span className='rounded-full'>
