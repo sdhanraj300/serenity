@@ -25,6 +25,7 @@ import { useSession } from 'next-auth/react';
 import { UploadButton } from '@uploadthing/react';
 import { Event } from '@prisma/client';
 import { useState, useEffect } from 'react';
+import { OurFileRouter } from '../api/uploadthing/core';
 const formSchema = z.object({
     name: z.string().min(5, 'Name must be at least 5 characters').max(50, 'Name must be at most 50 characters'),
     description: z.string().min(5, 'Description must be at least 5 characters').max(500, 'Description must be at most 500 characters'),
@@ -203,11 +204,14 @@ export default function EventPage() {
                 <motion.div className="flex items-center relative">
                     <div className="absolute items-center gap-3 bg-black rounded-[28px] px-4 py-1 flex top-[-40px] right-0 text-gray-300">
                         <p className="font-semibold">Edit Cover Image</p>
-                        <UploadButton
+
+                        <UploadButton<OurFileRouter, "imageUploader">
                             className="cursor-pointer ut-button:w-[100px] ut-button:h-[30px] ut-button:bg-gray-900 ut-button:rounded-[28px] ut-allowed-content:hidden ut-label:font-bold"
                             endpoint="imageUploader"
-                            onClientUploadComplete={(res: any) => {
-                                setUploadedUrl(res[0]?.url ?? '');
+                            onClientUploadComplete={(res) => {
+                                if (res && res.length > 0) {
+                                    setUploadedUrl(res[0].url);
+                                }
                             }}
                             onUploadError={(error: Error) => {
                                 alert(`ERROR! ${error.message}`);
