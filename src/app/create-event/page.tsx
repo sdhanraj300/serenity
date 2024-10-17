@@ -24,7 +24,7 @@ import { slideIn } from '@/utils/motion';
 import { useSession } from 'next-auth/react';
 import { UploadButton } from '@uploadthing/react';
 import { Event } from '@prisma/client';
-
+import { useState, useEffect } from 'react';
 const formSchema = z.object({
     name: z.string().min(5, 'Name must be at least 5 characters').max(50, 'Name must be at most 50 characters'),
     description: z.string().min(5, 'Description must be at least 5 characters').max(500, 'Description must be at most 500 characters'),
@@ -38,6 +38,7 @@ const formSchema = z.object({
 });
 
 export default function EventPage() {
+    const { data: session } = useSession();
     const router = useRouter();
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -53,10 +54,14 @@ export default function EventPage() {
             imageUrl: `${img}`
         }
     });
-
     const { handleSubmit, formState, setValue } = form;
     const { errors } = formState;
-
+    const [uploadedUrl, setUploadedUrl] = useState('');
+    useEffect(() => {
+        if (uploadedUrl) {
+            setValue('imageUrl', uploadedUrl);
+        }
+    }, [uploadedUrl, setValue]);
     const onSubmit = async (data: any) => {
         const parsedData: Event = {
             ...data,
@@ -85,18 +90,11 @@ export default function EventPage() {
         );
     };
 
-    const { data: session } = useSession();
     if (!session) {
         router.push('/login');
         return null;
     }
 
-    const [uploadedUrl, setUploadedUrl] = React.useState('');
-    React.useEffect(() => {
-        if (uploadedUrl) {
-            setValue('imageUrl', uploadedUrl);
-        }
-    }, [uploadedUrl, setValue]);
 
     return (
         <motion.div

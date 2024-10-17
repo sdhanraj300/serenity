@@ -2,7 +2,7 @@
 import {
     GoogleGenerativeAI,
 } from "@google/generative-ai";
-export default async function useGemini(ideasPrompt: string, partyType: string) {
+export default async function geminiFn(ideasPrompt: string, partyType: string) {
     const apiKey = process.env.GEMINI_API_KEY;
     const genAI = new GoogleGenerativeAI(apiKey!);
     const generationConfig = {

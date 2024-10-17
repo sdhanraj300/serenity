@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import toast from 'react-hot-toast';
 import Papa from 'papaparse';
 import { Event, Guest } from '@prisma/client';
-import useGemini from '@/hooks/useGemini';
+import geminiFn from '@/hooks/geminiFn';
 import Image from 'next/image';
 
 const EventDetailsPage = () => {
@@ -263,7 +263,7 @@ const EventDetailsPage = () => {
         }
     };
     const handleGenerateIdeas = async () => {
-        const ideasPromise = useGemini(ideasPrompt, eventData.type);
+        const ideasPromise = geminiFn(ideasPrompt, eventData.type);
         toast.promise(
             ideasPromise,
             {
@@ -461,7 +461,7 @@ const EventDetailsPage = () => {
                                                     variant="default"
                                                     className="rounded-full text-white font-bold bg-blue-600 hover:bg-blue-700"
                                                 >
-                                                    Add Guests 
+                                                    Add Guests
                                                 </Button>
                                             </DialogTrigger>
                                     }
