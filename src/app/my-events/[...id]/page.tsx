@@ -426,7 +426,7 @@ const EventDetailsPage = () => {
                                     event.invitationSent ? <div className="flex flex-col gap-3">
                                         {guestStatus?.length > 0 ? (
                                             guestStatus.map((guest: Guest, index) => (
-                                                <div className='flex items-center space-x-6'>
+                                                <div key={index} className='flex items-center space-x-6'>
                                                     <p>{guest.email}</p>
                                                 <p key={index} className={`text-sm ${guest?.status === "ACCEPTED" ? "text-green-600" : "text-red-600"} font-medium`}>
                                                     {guest?.status}
