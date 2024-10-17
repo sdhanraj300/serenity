@@ -7,8 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import img from '@/assets/cat-bday-wine.jpeg';
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion'; ``
 import {
     Form,
     FormControl,
@@ -35,7 +34,7 @@ const formSchema = z.object({
     endTime: z.string().regex(/^\d{2}:\d{2}$/, "Time must be in hh:mm format"),
     location: z.string().min(5, 'Location must be at least 5 characters').max(50, 'Location must be at most 50 characters'),
     additionalNotes: z.string().max(500, 'Additional notes must be at most 500 characters').optional(),
-    imageUrl: z.string().default(`${img}`)
+    imageUrl: z.string().default(`https://utfs.io/f/W6SBtRWXE5Y4RkL3yawLgUf0Nm1WvPcMlXAhQ35brGe4FuI6`)
 });
 
 export default function EventPage() {
@@ -52,7 +51,7 @@ export default function EventPage() {
             endTime: '',
             location: '',
             additionalNotes: '',
-            imageUrl: `${img}`
+            imageUrl: `https://utfs.io/f/W6SBtRWXE5Y4RkL3yawLgUf0Nm1WvPcMlXAhQ35brGe4FuI6`
         }
     });
     const { handleSubmit, formState, setValue } = form;
@@ -219,7 +218,7 @@ export default function EventPage() {
                         />
                     </div>
                     <Image
-                        src={uploadedUrl || img}
+                        src={uploadedUrl || 'https://utfs.io/f/W6SBtRWXE5Y4RkL3yawLgUf0Nm1WvPcMlXAhQ35brGe4FuI6'}
                         alt="Create Event"
                         className="rounded-[5px]"
                         width={500}

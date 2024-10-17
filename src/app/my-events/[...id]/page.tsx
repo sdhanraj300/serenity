@@ -69,6 +69,7 @@ const EventDetailsPage = () => {
                     loading: 'Loading event details...',
                     success: (data) => {
                         setEvent(data.event);
+                        console.log('Event data:', data.event);
                         setEventData(data.event);
                         setLoading(false);
                         return 'Event details loaded!';
@@ -421,36 +422,43 @@ const EventDetailsPage = () => {
                                 <span className="text-lg">{eventData.guestList.length} guests</span>
                             </div>
                             <div className='flex justify-between'>
-                                <div className="">
-                                    {eventData.guestList.map((guest, index) => (
-                                        <div key={index} className="justify-between items-center text-gray-400 mb-2">
-                                            <span>
-                                                {guest}
-                                            </span>
-                                            {
-                                                guestStatus.length ? "" :
-                                                    <Button
-                                                        onClick={() => handleRemoveGuest(index)}
-                                                        className='text-red-600 hover:scale-105 transition-all duration-300 hover:underline hover:text-red-800'
-                                                    >
-                                                        Remove
-                                                        <Trash className='h-5 w-5 ml-2' />
-                                                    </Button>
-                                            }
+                                {
+                                    event.invitationSent ? <div className="flex flex-col gap-3">
+                                        {guestStatus?.length > 0 ? (
+                                            guestStatus.map((guest: Guest, index) => (
+                                                <div className='flex items-center space-x-6'>
+                                                    <p>{guest.email}</p>
+                                                <p key={index} className={`text-sm ${guest?.status === "ACCEPTED" ? "text-green-600" : "text-red-600"} font-medium`}>
+                                                    {guest?.status}
+                                                </p>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            ""
+                                        )}
+                                    </div> :
+
+
+                                        <div className="">
+                                            {eventData.guestList.map((guest, index) => (
+                                                <div key={index} className="justify-between items-center text-gray-400 mb-2">
+                                                    <span>
+                                                        {guest}
+                                                    </span>
+                                                    {
+                                                        guestStatus.length ? "" :
+                                                            <Button
+                                                                onClick={() => handleRemoveGuest(index)}
+                                                                className='text-red-600 hover:scale-105 transition-all duration-300 hover:underline hover:text-red-800'
+                                                            >
+                                                                Remove
+                                                                <Trash className='h-5 w-5 ml-2' />
+                                                            </Button>
+                                                    }
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
-                                </div>
-                                <div className="flex flex-col gap-3">
-                                    {guestStatus?.length > 0 ? (
-                                        guestStatus.map((guest: Guest, index) => (
-                                            <div key={index} className={`text-sm ${guest?.status === "ACCEPTED" ? "text-green-600" : "text-red-600"} font-medium`}>
-                                                {guest?.status}
-                                            </div>
-                                        ))
-                                    ) : (
-                                        ""
-                                    )}
-                                </div>
+                                }
                             </div>
                             <div>
                                 <Dialog>
