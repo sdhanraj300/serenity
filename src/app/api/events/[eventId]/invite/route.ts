@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
                 }
                 .button {
                     display: inline-block;
-                    background-color: #2980b9;
+                    background-color: #43b929;
                     color: white;
                     padding: 10px 20px;
                     text-decoration: none;
@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
                 <p>The event will take place on <strong>${event.date}</strong> at <strong>${event.location}</strong>.</p>
                 <p>The Event will start at <strong>${event.startTime}</strong> and end at <strong>${event.endTime}</strong>.</p>
                 <p>We hope to see you there!</p>
-                <button>RSVP from the link below</button>
+                <p>RSVP from the link below</p>
                 <p class="button">${rsvpLink}</p>
                 <div class="footer">
                     <p>Best Regards,</p>

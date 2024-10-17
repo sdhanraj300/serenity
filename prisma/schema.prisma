@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["mongodb"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -32,6 +31,8 @@ model Event {
   description     String
   date            DateTime
   invitationSent  Boolean
+  coverImage      String   @default("https://utfs.io/f/W6SBtRWXE5Y4RkL3yawLgUf0Nm1WvPcMlXAhQ35brGe4FuI6")
+  activities      String[]
   userId          String   @db.ObjectId
   user            User     @relation(fields: [userId], references: [id])
   Guest           Guest[]

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -22,6 +22,8 @@ import * as React from 'react';
 import toast from 'react-hot-toast';
 import { slideIn } from '@/utils/motion';
 import { useSession } from 'next-auth/react';
+import { UploadButton } from '@uploadthing/react';
+import { Event } from '@prisma/client';
 
 const formSchema = z.object({
     name: z.string().min(5, 'Name must be at least 5 characters').max(50, 'Name must be at most 50 characters'),
@@ -31,7 +33,8 @@ const formSchema = z.object({
     startTime: z.string().regex(/^\d{2}:\d{2}$/, "Time must be in hh:mm format"),
     endTime: z.string().regex(/^\d{2}:\d{2}$/, "Time must be in hh:mm format"),
     location: z.string().min(5, 'Location must be at least 5 characters').max(50, 'Location must be at most 50 characters'),
-    additionalNotes: z.string().max(500, 'Additional notes must be at most 500 characters').optional()
+    additionalNotes: z.string().max(500, 'Additional notes must be at most 500 characters').optional(),
+    imageUrl: z.string().default(`${img}`)
 });
 
 export default function EventPage() {
@@ -46,17 +49,21 @@ export default function EventPage() {
             startTime: '',
             endTime: '',
             location: '',
-            additionalNotes: ''
+            additionalNotes: '',
+            imageUrl: `${img}`
         }
     });
-    const { handleSubmit, formState } = form;
+
+    const { handleSubmit, formState, setValue } = form;
     const { errors } = formState;
+
     const onSubmit = async (data: any) => {
-        const parsedData = {
+        const parsedData: Event = {
             ...data,
             invitationSent: false,
             date: new Date(data.date),
-        }
+            activities: [],
+        };
         console.log(parsedData);
         toast.promise(
             fetch('/api/events', {
@@ -65,32 +72,47 @@ export default function EventPage() {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(parsedData)
-            }).then((res) => {
-                res.json()
-                router.push('/my-events');
-            }),
+            })
+                .then((res) => {
+                    res.json();
+                    router.push('/my-events');
+                }),
             {
                 loading: 'Creating event...',
                 success: 'Event created successfully',
                 error: 'Failed to create event'
             }
         );
-    }
+    };
+
     const { data: session } = useSession();
     if (!session) {
         router.push('/login');
         return null;
     }
+
+    const [uploadedUrl, setUploadedUrl] = React.useState('');
+    React.useEffect(() => {
+        if (uploadedUrl) {
+            setValue('imageUrl', uploadedUrl);
+        }
+    }, [uploadedUrl, setValue]);
+
     return (
-        <motion.div variants={slideIn('top', 'spring', 0.5, 0.5)} initial="hidden" animate="visible" exit="hidden"
-            className="mt-20 items-center justify-center gap-10 w-full flex-col md:flex-row flex">
+        <motion.div
+            variants={slideIn('top', 'spring', 0.5, 0.5)}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            className="mt-20 items-center justify-center gap-10 w-full flex-col md:flex-row flex"
+        >
             <div className="p-6 w-full md:w-[50%] bg-black/40 text-gray-300 shadow-md rounded-[28px]">
                 <Form {...form}>
                     <form action="POST" onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         {/* Event Name */}
                         <FormField control={form.control} name="name" render={({ field }) => (
-                            <FormItem className=''>
-                                <FormControl className=''>
+                            <FormItem>
+                                <FormControl>
                                     <Input {...field} id="name" placeholder="Give Your Event A Name..." className="mt-1 py-8 font-bold bg-black/50 text-2xl md:text-4xl block border-none shadow-sm" />
                                 </FormControl>
                                 <FormMessage className="text-red-500">{errors.name?.message}</FormMessage>
@@ -165,7 +187,7 @@ export default function EventPage() {
                         <FormField control={form.control} name="additionalNotes" render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <Textarea {...field} id="additionalNotes" placeholder="Any Additional Notes?" className="mt-4 p-2 block w-full border-none bg-black/50 font-bold  rounded-[5px]" />
+                                    <Textarea {...field} id="additionalNotes" placeholder="Any Additional Notes?" className="mt-4 p-2 block w-full border-none bg-black/50 font-bold rounded-[5px]" />
                                 </FormControl>
                                 <FormMessage className="text-red-500">{errors.additionalNotes?.message}</FormMessage>
                             </FormItem>
@@ -177,10 +199,32 @@ export default function EventPage() {
                     </form>
                 </Form>
             </div>
-            <motion.div
-                className="flex items-center justify-center">
-                <Image src={img} alt="Create Event" className='rounded-[5px]' width={500} height={500} />
-            </motion.div>
+
+            {/* Image Section */}
+            <div>
+                <motion.div className="flex items-center relative">
+                    <div className="absolute items-center gap-3 bg-black rounded-[28px] px-4 py-1 flex top-[-40px] right-0 text-gray-300">
+                        <p className="font-semibold">Edit Cover Image</p>
+                        <UploadButton
+                            className="cursor-pointer ut-button:w-[100px] ut-button:h-[30px] ut-button:bg-gray-900 ut-button:rounded-[28px] ut-allowed-content:hidden ut-label:font-bold"
+                            endpoint="imageUploader"
+                            onClientUploadComplete={(res: any) => {
+                                setUploadedUrl(res[0]?.url ?? '');
+                            }}
+                            onUploadError={(error: Error) => {
+                                alert(`ERROR! ${error.message}`);
+                            }}
+                        />
+                    </div>
+                    <Image
+                        src={uploadedUrl || img}
+                        alt="Create Event"
+                        className="rounded-[5px]"
+                        width={500}
+                        height={500}
+                    />
+                </motion.div>
+            </div>
         </motion.div>
     );
 }

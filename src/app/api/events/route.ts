@@ -23,6 +23,8 @@ export async function POST(req: NextRequest) {
     guestList,
     location,
     invitationSent,
+    imageUrl,
+    activities
   } = body;
 
   const userId = token?.sub;
@@ -69,6 +71,8 @@ export async function POST(req: NextRequest) {
       guestList,
       location,
       invitationSent,
+      coverImage: imageUrl,
+      activities
     },
   });
 

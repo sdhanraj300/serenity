@@ -9,14 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "@hookform/resolvers": "^3.9.0",
-    "@prisma/client": "^5.20.0",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-navigation-menu": "^1.2.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.1",
+    "@uploadthing/react": "^7.0.3",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
@@ -30,7 +31,6 @@
     "nodemailer": "^6.9.15",
     "nodemailer-sendgrid-transport": "^0.2.0",
     "papaparse": "^5.4.1",
-    "prisma": "^5.20.0",
     "react": "^18",
     "react-dom": "^18",
     "react-dropzone": "^14.2.9",
@@ -40,9 +40,11 @@
     "sharp": "^0.33.5",
     "tailwind-merge": "^2.5.3",
     "tailwindcss-animate": "^1.0.7",
+    "uploadthing": "^7.1.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@prisma/client": "^5.21.0",
     "@types/bcrypt": "^5.0.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
@@ -54,6 +56,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.14",
     "postcss": "^8",
+    "prisma": "^5.21.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
