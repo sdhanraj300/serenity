@@ -91,7 +91,7 @@ const Page = () => {
   }
   return (
     <motion.div
-      className='mt-20 flex md:flex-row flex-col mx-4 items-center justify-center gap-40'
+      className='mt-20 flex md:flex-row min-h-screen flex-col mx-4 items-center justify-center gap-40'
       initial={{ opacity: 0, y: -20 }}  // Animation starts off-screen
       animate={{ opacity: 1, y: 0 }}     // Animation brings it back to normal
       transition={{ duration: 0.5 }}
@@ -115,7 +115,7 @@ const Page = () => {
         <span>{event.additionalNotes}</span>
       </div>
       <div className="">
-        <Image src={event.coverImage} className='md:mt-10 mt-[-100px]' height={500} width={500} alt='party' />
+        <Image src={event.coverImage} className='md:mt-10' height={500} width={500} alt='party' />
         <div className="flex justify-center items-center gap-10 mt-10 flex-wrap">
           <Button onClick={() => handleClick("Yes")} className='flex bg-black flex-col w-40 h-40 hover:bg-gray-700 transition-all duration-300 rounded-full'>
             <span className='rounded-full'>

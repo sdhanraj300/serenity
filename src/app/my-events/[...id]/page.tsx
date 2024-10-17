@@ -529,7 +529,7 @@ const EventDetailsPage = () => {
                         }
                     </div>
                     <div className="">
-                        <Image src={event.coverImage} className='rounded-[28px] hover:scale-105 transition-all duration-300' width={400} height={400} alt='cover image' />
+                        <Image src={event.coverImage} className='rounded-[28px] hover:scale-105 transition-all duration-300' height={400} width={400} alt='cover image' />
                     </div>
                 </CardContent>
             </Card>
