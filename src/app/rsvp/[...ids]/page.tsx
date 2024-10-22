@@ -92,8 +92,8 @@ const Page = () => {
   return (
     <motion.div
       className='mt-20 flex md:flex-row min-h-screen flex-col mx-4 items-center justify-center gap-40'
-      initial={{ opacity: 0, y: -20 }}  // Animation starts off-screen
-      animate={{ opacity: 1, y: 0 }}     // Animation brings it back to normal
+      initial={{ opacity: 0, y: -20 }} 
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
       <div className="mt-10 flex flex-col gap-10">

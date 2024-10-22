@@ -421,16 +421,23 @@ const EventDetailsPage = () => {
                                 <Users className="h-6 w-6 text-blue-500" />
                                 <span className="text-lg">{eventData.guestList.length} guests</span>
                             </div>
+                            <h1 className='font-bold text-2xl'>Guests :</h1>
                             <div className='flex justify-between'>
                                 {
                                     event.invitationSent ? <div className="flex flex-col gap-3">
                                         {guestStatus?.length > 0 ? (
                                             guestStatus.map((guest: Guest, index) => (
-                                                <div key={index} className='flex items-center space-x-6'>
+                                                <div key={index} className='flex justify-between items-center space-x-6'>
                                                     <p>{guest.email}</p>
-                                                <p key={index} className={`text-sm ${guest?.status === "ACCEPTED" ? "text-green-600" : "text-red-600"} font-medium`}>
-                                                    {guest?.status}
-                                                </p>
+                                                    <>
+                                                        {guest?.status === "ACCEPTED" ? (
+                                                            <p className='text-green-600'>Accepted</p>
+                                                        ) : guest?.status === "DECLINED" ? (
+                                                            <p className='text-red-600'>Declined</p>
+                                                        ) : (
+                                                            <p className='text-yellow-600'>Pending</p>
+                                                        )}
+                                                    </>
                                                 </div>
                                             ))
                                         ) : (
@@ -515,11 +522,11 @@ const EventDetailsPage = () => {
                             </div>
                         </div>
 
-                        <div className="text-lg">
-                            <p>{event.description}</p>
+                        <div className="text-lg mt-5">
+                            <p> <span className='font-bold'>Description</span> : {event.description}</p>
                         </div>
                         <div className="">
-                            <p className="text-gray-400">{event.additionalNotes}</p>
+                            <p className="text-red-400"><span className='font-bold'>*Additional Notes :</span>{event.additionalNotes}</p>
                         </div>
                         {
                             event.invitationSent ? "" :

@@ -120,7 +120,7 @@ const HeroBanner = () => {
                 variants={sentence}
                 initial="hidden"
                 animate="visible"
-                className="flex flex-col lg:flex-row items-center justify-between space-y-10 lg:space-x-10 lg:space-y-0 mt-10"
+                className="flex px-10 flex-col lg:flex-row items-center justify-between space-y-10 lg:space-x-10 lg:space-y-0 mt-10"
             >
                 <div className="relative">
                     <motion.div
@@ -186,7 +186,6 @@ const HeroBanner = () => {
                 </div>
             </motion.div>
 
-            {/* Extra Section with More Events */}
             <motion.h1
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -214,7 +213,7 @@ const HeroBanner = () => {
                         },
                     },
                 }}
-                className="flex flex-col lg:flex-row justify-between items-center mt-10 space-y-10 lg:space-x-10 lg:space-y-0"
+                className="flex px-10 flex-col lg:flex-row justify-between items-center mt-10 space-y-10 lg:space-x-10 lg:space-y-0"
             >
                 {[image3, image4, image5].map((image, idx) => (
                     <div className="relative" key={idx}>

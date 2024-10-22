@@ -58,7 +58,7 @@ const Navbar = () => {
             {isMobileMenuOpen && (
                 <div className="fixed top-1 pb-10 rounded-[16px] left-0 bg-black w-full z-50 flex flex-col justify-center items-center md:hidden">
                     <ul className="space-y-6 text-center">
-                        {['Home', 'About', 'My Events', 'Create Event'].map((item) => (
+                        {['Home', 'About', 'My Events', 'Create Event', 'My Account'].map((item) => (
                             <li key={item} className="text-xl text-white">
                                 <button
                                     onClick={() => {
@@ -79,6 +79,15 @@ const Navbar = () => {
                                                 return;
                                             }
                                             router.push('/create-event');
+                                            return;
+                                        }
+                                        if (item === 'My Account') {
+                                            if (!isLoggedIn) {
+                                                toast.error('Please sign in to view your account');
+                                                router.push('/login');
+                                                return;
+                                            }
+                                            router.push('/account');
                                             return;
                                         }
                                         router.push(item === 'Home' ? '/' : `/${item.toLowerCase()}`);
@@ -121,7 +130,7 @@ const Navbar = () => {
 
             {/* Desktop Menu */}
             <ul className="hidden md:flex font-bold items-center space-x-2 md:space-x-6">
-                {['Home', 'About' , 'My Events', 'Create Event'].map((item) => (
+                {['Home', 'About', 'My Events', 'Create Event', 'My Account'].map((item) => (
                     <li key={item} className="relative group">
                         <button
                             onClick={() => {
@@ -141,6 +150,15 @@ const Navbar = () => {
                                         return;
                                     }
                                     router.push('/create-event');
+                                    return;
+                                }
+                                if (item === 'My Account') {
+                                    if (!isLoggedIn) {
+                                        toast.error('Please sign in to view your account');
+                                        router.push('/login');
+                                        return;
+                                    }
+                                    router.push('/account');
                                     return;
                                 }
                                 router.push(item === 'Home' ? '/' : `/${item.toLowerCase()}`);
