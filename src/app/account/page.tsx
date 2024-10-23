@@ -14,15 +14,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const AccountPage = () => {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession(); // Always call the hook first
     const router = useRouter();
-    if (!session) {
-        toast.error('Please login to view this page');
-        router.push('/login');
-        return null
-    };
     const userId = session?.user?.id;
-    const [isOpen, setIsOpen] = useState(false);
+
+    // Fetch user data
     const { data: userData, isError, isLoading, error, refetch } = useQuery({
         queryKey: ["user", userId],
         queryFn: async () => {
@@ -34,6 +30,8 @@ const AccountPage = () => {
         },
         enabled: !!userId,
     });
+
+    // Mutate user data
     const mutation = useMutation({
         mutationFn: async (data: Partial<User>) => {
             const response = await fetch(`/api/user/${userId}`, {
@@ -64,47 +62,35 @@ const AccountPage = () => {
             toast.loading("Updating profile...");
         },
     });
-    const motionVariants = {
-        hidden: {
-            opacity: 0,
-            y: 100,
-        },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.6,
-            },
-        },
-    };
 
-    const fadeIn = {
-        hidden: { opacity: 0 },
-        visible: { opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
-    };
-
-    const slideIn = {
-        hidden: { x: -200, opacity: 0 },
-        visible: { x: 0, opacity: 1, transition: { duration: 0.7 } },
-    };
-
-
+    const [isOpen, setIsOpen] = useState(false);
 
     const onSubmit = (data: Partial<User>) => {
         mutation.mutate(data);
         setIsOpen(false);
     };
 
+    // Motion variants
+    const motionVariants = {
+        hidden: { opacity: 0, y: 100 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+    };
+    const fadeIn = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.5, ease: "easeOut" } } };
+    const slideIn = { hidden: { x: -200, opacity: 0 }, visible: { x: 0, opacity: 1, transition: { duration: 0.7 } } };
 
+    // Redirect logic
+    if (status === "loading") return null; // Show nothing while session is loading
+    if (!session) {
+        toast.error("Please login to view this page");
+        router.push("/login");
+        return null;
+    }
+
+    // Loading and error states
     if (isLoading) {
         return (
             <div className="flex justify-center items-center h-screen">
-                <FidgetSpinner
-                    visible={true}
-                    height="80"
-                    width="80"
-                    ariaLabel="fidget-spinner-loading"
-                />
+                <FidgetSpinner visible={true} height="80" width="80" ariaLabel="fidget-spinner-loading" />
             </div>
         );
     }
@@ -117,6 +103,7 @@ const AccountPage = () => {
         );
     }
 
+    // Render account page content
     return (
         <motion.div
             initial="hidden"
@@ -125,29 +112,17 @@ const AccountPage = () => {
             className="bg-black/50 relative mt-20 mx-4 px-4 flex h-full pb-10 flex-col items-center pt-20 min-h-screen max-w-5xl md:mx-auto text-white rounded-[28px]"
         >
             {/* Avatar and Edit Section */}
-            <motion.div
-                variants={fadeIn}
-                className="flex flex-col gap-10 items-center justify-center mb-10"
-            >
+            <motion.div variants={fadeIn} className="flex flex-col gap-10 items-center justify-center mb-10">
                 <motion.div
                     className="w-[150px] h-[150px] rounded-full overflow-hidden relative"
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <Image
-                        src={userData?.avatar || "/default-avatar.png"}
-                        alt="User Avatar"
-                        width={150}
-                        height={150}
-                        className="rounded-full object-cover"
-                    />
+                    <Image src={userData?.avatar || "/default-avatar.png"} alt="User Avatar" width={150} height={150} className="rounded-full object-cover" />
                 </motion.div>
                 <motion.div initial="hidden" animate="visible" variants={slideIn}>
-                    <Button
-                        className="bg-blue-600 text-white rounded-[28px] hover:bg-blue-500 flex items-center gap-2"
-                        onClick={() => setIsOpen(true)}
-                    >
+                    <Button className="bg-blue-600 text-white rounded-[28px] hover:bg-blue-500 flex items-center gap-2" onClick={() => setIsOpen(true)}>
                         <Edit size={24} />
                         Edit Profile
                     </Button>
@@ -155,12 +130,7 @@ const AccountPage = () => {
             </motion.div>
 
             {/* Profile Details Section */}
-            <motion.div
-                className="flex flex-col w-full max-w-3xl gap-8"
-                initial="hidden"
-                animate="visible"
-                variants={fadeIn}
-            >
+            <motion.div className="flex flex-col w-full max-w-3xl gap-8" initial="hidden" animate="visible" variants={fadeIn}>
                 {/* Name Section */}
                 <div className="hover:shadow-violet-400 shadow-sm transition-all duration-700 p-6 rounded-[28px] bg-black opacity-90">
                     <p className="text-4xl font-bold flex gap-2 items-center">
@@ -173,7 +143,8 @@ const AccountPage = () => {
                 <div className="hover:shadow-violet-400 shadow-sm transition-all duration-700 p-6 rounded-[28px] bg-[#000000] opacity-90">
                     <p className="text-xl flex gap-2 font-bold">
                         <Shell size={24} />
-                        Bio</p>
+                        Bio
+                    </p>
                     <p className="text-gray-200 text-md font-normal">{userData?.bio || "Bio not set"}</p>
                 </div>
 
@@ -200,36 +171,29 @@ const AccountPage = () => {
                     </div>
                 )}
 
-                {
-                    userData?.events?.length > 0 && (
-                        <div className="hover:shadow-violet-400 shadow-sm transition-all duration-700 p-6 rounded-[28px] bg-black opacity-90">
-                            <p className="text-xl font-bold flex gap-2 items-center">
-                                <Calendar size={24} className="inline-block" />
-                                Events
-                            </p>
-                            <ul className="list-inside list-none text-gray-200">
-                                {userData?.events.map(({ id, name }: { id: string, name: string }) => (
-                                    <li key={id} className="hover:underline flex gap-3 w-1/3 cursor-pointer justify-between">
-                                        <Link href={`/my-events/${id}`}>
-                                            {name}
-                                        </Link>
-                                        <SquareArrowOutUpRight />
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )
-                }
-
+                {/* Events Section */}
+                {userData?.events?.length > 0 && (
+                    <div className="hover:shadow-violet-400 shadow-sm transition-all duration-700 p-6 rounded-[28px] bg-black opacity-90">
+                        <p className="text-xl font-bold flex gap-2 items-center">
+                            <Calendar size={24} className="inline-block" />
+                            Events
+                        </p>
+                        <ul className="list-inside list-none text-gray-200">
+                            {userData?.events.map(({ id, name }: { id: string, name: string }) => (
+                                <li key={id} className="hover:underline flex gap-3 w-1/3 cursor-pointer justify-between">
+                                    <Link href={`/my-events/${id}`}>
+                                        {name}
+                                    </Link>
+                                    <SquareArrowOutUpRight />
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </motion.div>
 
             {/* Edit Dialog */}
-            <EditDialog
-                userData={userData}
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                onSubmit={onSubmit}
-            />
+            <EditDialog userData={userData} isOpen={isOpen} setIsOpen={setIsOpen} onSubmit={onSubmit} />
         </motion.div>
     );
 };
