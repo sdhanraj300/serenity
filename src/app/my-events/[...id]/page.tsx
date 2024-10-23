@@ -18,11 +18,6 @@ const EventDetailsPage = () => {
     const session = useSession();
     const router = useRouter();
     const { data: user } = session;
-    if (!user) {
-        toast.error('Please login to view this page');
-        router.push('/login');
-        return null;
-    }
     const [isOpen, setIsOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const [event, setEvent] = useState<Event | null>(null);
@@ -314,6 +309,11 @@ const EventDetailsPage = () => {
                 error: 'Failed to update event'
             }
         );
+    }
+    if (!user) {
+        toast.error('Please login to view this page');
+        router.push('/login');
+        return null;
     }
     return (
         <div className="p-6 relative max-w-5xl rounded-[28px] transition-all duration-700 bg-black mx-auto mt-20">
