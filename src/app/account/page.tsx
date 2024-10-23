@@ -23,32 +23,6 @@ const AccountPage = () => {
     };
     const userId = session?.user?.id;
     const [isOpen, setIsOpen] = useState(false);
-
-    // Animation variants
-    const motionVariants = {
-        hidden: {
-            opacity: 0,
-            y: 100,
-        },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.6,
-            },
-        },
-    };
-
-    const fadeIn = {
-        hidden: { opacity: 0 },
-        visible: { opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
-    };
-
-    const slideIn = {
-        hidden: { x: -200, opacity: 0 },
-        visible: { x: 0, opacity: 1, transition: { duration: 0.7 } },
-    };
-
     const { data: userData, isError, isLoading, error, refetch } = useQuery({
         queryKey: ["user", userId],
         queryFn: async () => {
@@ -60,7 +34,6 @@ const AccountPage = () => {
         },
         enabled: !!userId,
     });
-    console.log(userData);
     const mutation = useMutation({
         mutationFn: async (data: Partial<User>) => {
             const response = await fetch(`/api/user/${userId}`, {
@@ -91,6 +64,31 @@ const AccountPage = () => {
             toast.loading("Updating profile...");
         },
     });
+    const motionVariants = {
+        hidden: {
+            opacity: 0,
+            y: 100,
+        },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.6,
+            },
+        },
+    };
+
+    const fadeIn = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
+    };
+
+    const slideIn = {
+        hidden: { x: -200, opacity: 0 },
+        visible: { x: 0, opacity: 1, transition: { duration: 0.7 } },
+    };
+
+
 
     const onSubmit = (data: Partial<User>) => {
         mutation.mutate(data);
