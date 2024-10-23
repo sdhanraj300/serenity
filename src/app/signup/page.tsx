@@ -7,7 +7,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from 'next/link'
 import toast from 'react-hot-toast'
-
+import img from '@/assets/Rectangle.png'
+import Image from 'next/image'
+import { motion } from 'framer-motion'
+import { slideIn } from '@/utils/motion'
 export default function Page() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -77,8 +80,20 @@ export default function Page() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-8">
-            <div className="w-full max-w-2xl backdrop-blur-lg bg-white/10 p-12 rounded-3xl shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/20">
+        <motion.div
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            className="min-h-screen mt-20 mx-10 rounded-[28px] flex shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/20 backdrop-blur-lg h-full items-center bg-black justify-center p-8">
+            <motion.div
+                variants={slideIn('left', 'spring', 0.1, 0.1)}
+                className="hidden md:block relative">
+                <Image src={img} className='rounded-[28px] w-[500px]' alt="rectangle" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <p className="italic text-5xl font-bold text-white">Serenity</p>
+                </div>
+            </motion.div>
+            <div className="w-full max-w-2xl  p-12 rounded-3xl ">
                 <h3 className="text-3xl font-bold text-center text-white mb-10">Sign Up to your account</h3>
                 <form onSubmit={handleSubmit} method='POST' className="space-y-8">
                     <div className="space-y-6">
@@ -151,6 +166,6 @@ export default function Page() {
                     </Button>
                 </div>
             </div>
-        </div>
+        </motion.div>
     )
 }

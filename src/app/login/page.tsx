@@ -7,7 +7,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import toast from 'react-hot-toast'
 import Link from 'next/link'
-
+import img from '@/assets/Rectangle.png'
+import Image from 'next/image'
+import { animate, motion, spring } from 'framer-motion'
+import { slideIn } from '@/utils/motion'
 export default function Page() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -17,7 +20,7 @@ export default function Page() {
     if (session.data) {
         router.push('/');
     }
-    console.log( session);
+    console.log(session);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrorMessage('');
@@ -32,7 +35,7 @@ export default function Page() {
             {
                 loading: 'Logging in...',
                 success: (data) => {
-                    if (data?.error) throw new Error(data.error); 
+                    if (data?.error) throw new Error(data.error);
                     return 'Logged in successfully';
                 },
                 error: (err) => {
@@ -53,7 +56,7 @@ export default function Page() {
         } catch (error) {
             console.error("Login error:", error);
         } finally {
-            setEmail(''); 
+            setEmail('');
             setPassword('');
         }
     };
@@ -72,10 +75,14 @@ export default function Page() {
         );
         signIn('google', { callbackUrl: '/' });
     }
-
     return (
-        <div className="min-h-screen flex items-center justify-center p-8">
-            <div className="w-full max-w-2xl backdrop-blur-lg bg-white/10 p-12 rounded-3xl shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/20">
+        <motion.div
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            className="overflow-hidden min-h-screen mt-20 mx-4 md:mx-10 gap-10 md:px-20 rounded-[28px] flex shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/20 backdrop-blur-lg h-full  items-center bg-black justify-center p-8"
+        >
+            <div className="w-full max-w-2xl">
                 <h3 className="text-3xl font-bold text-center text-white mb-10">Login to your account</h3>
                 <form onSubmit={handleSubmit} method='POST' className="space-y-8">
                     <div className="space-y-6">
@@ -116,7 +123,7 @@ export default function Page() {
                     <div className="flex items-center gap-2 justify-between pt-4">
                         <Button
                             type="submit"
-                            className="px-8 py-6 text-lg bg-green-400 hover:bg-green-700 text-gray-900 rounded-xl transition-all duration-300 backdrop-blur-sm"
+                            className="px-8 py-6 text-lg bg-green-400 hover:bg-green-700 text-gray-900 font-bold rounded-xl transition-all duration-300 backdrop-blur-sm"
                         >
                             Sign In
                         </Button>
@@ -129,12 +136,23 @@ export default function Page() {
                 <div className="mt-10">
                     <Button
                         onClick={handleGoogleSignIn}
-                        className="w-full px-8 py-6 text-lg bg-blue-500 hover:bg-blue-700 text-black font-bold rounded-xl transition-all duration-300 backdrop-blur-sm"
+                        className="w-full px-8 py-6 text-lg bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-xl transition-all duration-300 backdrop-blur-sm"
                     >
                         Sign in with Google
                     </Button>
                 </div>
             </div>
-        </div>
-    )
+
+            {/* This part controls the image animation */}
+            <motion.div
+                variants={slideIn('right', 'spring', 0.1, 0.1)}
+                className="hidden md:block relative"
+            >
+                <Image src={img} alt="login" className="w-[600px] rounded-[28px]" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <p className="italic text-5xl font-bold text-white">Serenity</p>
+                </div>
+            </motion.div>
+        </motion.div>
+    );
 }

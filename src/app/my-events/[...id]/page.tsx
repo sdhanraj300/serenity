@@ -12,8 +12,17 @@ import Papa from 'papaparse';
 import { Event, Guest } from '@prisma/client';
 import geminiFn from '@/hooks/geminiFn';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 
 const EventDetailsPage = () => {
+    const session = useSession();
+    const router = useRouter();
+    const { data: user } = session;
+    if (!user) {
+        toast.error('Please login to view this page');
+        router.push('/login');
+        return null;
+    }
     const [isOpen, setIsOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const [event, setEvent] = useState<Event | null>(null);
@@ -38,7 +47,6 @@ const EventDetailsPage = () => {
     const { id: eventId } = useParams();
     const [ideas, setIdeas] = useState([""]);
     const [ideasPrompt, setIdeasPrompt] = useState('Write a theme and we will suggest you something great.');
-    const router = useRouter();
     useEffect(() => {
         async function fetchGuestStatus() {
             try {
