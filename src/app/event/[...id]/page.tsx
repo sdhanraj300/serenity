@@ -20,22 +20,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import useComment from '@/hooks/useComment';
-import useGuestRSVPStatus from '@/hooks/useGuestRSVPStatus';
-import Page from '@/app/rsvp/[...ids]/page';
 
 const formSchema = z.object({
     comment: z.string().min(5, { message: 'Comment must be at least 5 characters' }).optional().default(''),
     imageUrl: z.string().optional().default(''),
 });
+
 type FormData = z.infer<typeof formSchema>;
 
 const EventPage = () => {
     const { data: session } = useSession();
-    const [guestRSVPStatus, setGuestRSVPStatus] = React.useState({
-        status: '',
-        id: ''
-    }
-    );
+    const [guestRSVPStatus, setGuestRSVPStatus] = React.useState({ status: '', id: '' });
     const router = useRouter();
     const { id } = useParams();
     const { data: guestStatus } = useGuestStatus(id[0]);
@@ -48,19 +43,16 @@ const EventPage = () => {
             );
 
             if (currentGuest && currentGuest.status !== guestRSVPStatus.status) {
-                setGuestRSVPStatus({
-                    status: currentGuest.status,
-                    id: currentGuest.id
-                });
+                setGuestRSVPStatus({ status: currentGuest.status, id: currentGuest.id });
             }
         }
     }, [guestStatus, session?.user?.email]);
+
     useEffect(() => {
         if (guestRSVPStatus?.status === 'PENDING') {
             toast.error('RSVP Now to interact with this event');
             router.push(`/rsvp/${id[0]}/${guestRSVPStatus.id}`);
         }
-
     }, [guestRSVPStatus, router, id]);
 
     if (guestRSVPStatus.status === 'DECLINED') {
@@ -68,14 +60,16 @@ const EventPage = () => {
             <div className='mt-20'>
                 <h1 className="text-3xl font-bold text-center mt-20">You have declined this event</h1>
             </div>
-        )
-
+        );
     }
+
     const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<FormData>({
         resolver: zodResolver(formSchema),
-        defaultValues: { comment: '', imageUrl: '' }
+        defaultValues: { comment: '', imageUrl: '' },
     });
+
     const mutation = useComment(id[0]);
+
     const onSubmit = (data: FormData) => {
         const dataWithEventId = {
             comment: data.comment || null,
@@ -83,16 +77,20 @@ const EventPage = () => {
             gifUrl: null,
             eventId: id[0],
             userName: session?.user?.name!,
-            userId: session?.user?.id
+            userId: session?.user?.id,
         };
         setValue('comment', '');
         setValue('imageUrl', '');
         mutation.mutate(dataWithEventId);
     };
 
-    if (isLoading) return <div className="flex justify-center items-center h-screen"><FidgetSpinner visible height="80" width="80" ariaLabel="fidget-spinner-loading" /></div>;
+    if (isLoading) {
+        return <div className="flex justify-center items-center h-screen"><FidgetSpinner visible height="80" width="80" ariaLabel="fidget-spinner-loading" /></div>;
+    }
 
-    if (isError) toast.error(error.message);
+    if (isError) {
+        toast.error(error.message);
+    }
 
     if (!session) {
         toast.error('You need to be logged in to view this page');
@@ -101,6 +99,7 @@ const EventPage = () => {
 
     const imgUrl = watch('imageUrl');
     const event = eventData?.event;
+
     return (
         <motion.div className="mt-20 mx-4 bg-black max-w-5xl rounded-[28px] md:mx-auto min-h-screen"
             initial={{ opacity: 0 }}
@@ -176,7 +175,6 @@ const EventPage = () => {
                                         {comment.userName.charAt(0)}
                                     </CardTitle>
                                 </CardHeader>
-
                                 <CardContent>
                                     <div className="ml-[-30px]">
                                         <div className="flex flex-col">
@@ -198,32 +196,35 @@ const EventPage = () => {
                     </div>
                 )}
             </div>
-
-
-
             <div className="mt-8 p-4">
                 {imgUrl && <Image src={imgUrl} alt="reaction image" width={100} height={100} className="mb-4" />}
                 <UploadButton<OurFileRouter, 'imageUploader'>
                     endpoint="imageUploader"
-                    onClientUploadComplete={(res) => res && setValue('imageUrl', res[0].url)}
-                    onUploadError={(error) => alert(`Upload failed: ${error.message}`)}
+                    onClientUploadComplete={(res) => {
+                        if (res) {
+                            setValue('imageUrl', res[0].url);
+                        }
+                    }}
+                    onUploadError={(error: Error) => alert(`Upload failed: ${error.message}`)}
                     className="cursor-pointer ut-button:w-[100px] ut-button:h-[30px] ut-button:bg-gray-900 ut-button:rounded-[28px] mb-4"
                 />
-                {errors.imageUrl && <p className="text-red-500">{errors.imageUrl.message}</p>}
                 <div className="bg-gray-900 rounded-[28px] flex items-center gap-2">
                     <Input
                         className="!border-none w-full"
                         placeholder="Comment"
                         {...register('comment')}
                     />
-                    <Button onClick={handleSubmit(onSubmit)} className="px-10 bg-blue-600 hover:bg-blue-700 text-white rounded-[28px]">Post</Button>
+                    <Button
+                        onClick={handleSubmit(onSubmit)}
+                        className="px-10 bg-blue-600 hover:bg-blue-700 text-white rounded-[28px]"
+                    >
+                        Post
+                    </Button>
                 </div>
-
                 {errors.comment && <p className="text-red-500 mt-2">{errors.comment.message}</p>}
             </div>
-
         </motion.div>
     );
-}
+};
 
 export default EventPage;
