@@ -46,7 +46,7 @@ const EventPage = () => {
                 setGuestRSVPStatus({ status: currentGuest.status, id: currentGuest.id });
             }
         }
-    }, [guestStatus, session?.user?.email]);
+    }, [guestStatus, session?.user?.email, guestRSVPStatus.status]);
 
     useEffect(() => {
         if (guestRSVPStatus?.status === 'PENDING') {
@@ -55,20 +55,14 @@ const EventPage = () => {
         }
     }, [guestRSVPStatus, router, id]);
 
-    if (guestRSVPStatus.status === 'DECLINED') {
-        return (
-            <div className='mt-20'>
-                <h1 className="text-3xl font-bold text-center mt-20">You have declined this event</h1>
-            </div>
-        );
-    }
-
     const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<FormData>({
         resolver: zodResolver(formSchema),
         defaultValues: { comment: '', imageUrl: '' },
     });
 
     const mutation = useComment(id[0]);
+
+
 
     const onSubmit = (data: FormData) => {
         const dataWithEventId = {
@@ -83,7 +77,13 @@ const EventPage = () => {
         setValue('imageUrl', '');
         mutation.mutate(dataWithEventId);
     };
-
+    if (guestRSVPStatus.status === 'DECLINED') {
+        return (
+            <div className='mt-20'>
+                <h1 className="text-3xl font-bold text-center mt-20">You have declined this event</h1>
+            </div>
+        );
+    }
     if (isLoading) {
         return <div className="flex justify-center items-center h-screen"><FidgetSpinner visible height="80" width="80" ariaLabel="fidget-spinner-loading" /></div>;
     }
