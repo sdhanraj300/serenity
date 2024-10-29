@@ -65,18 +65,23 @@ const EventPage = () => {
 
 
     const onSubmit = (data: FormData) => {
+        const userName = session?.user?.name || 'Anonymous';
+        const userId = session?.user?.id || '';
+
         const dataWithEventId = {
             comment: data.comment || null,
             imageUrl: data.imageUrl || null,
             gifUrl: null,
             eventId: id[0],
-            userName: session?.user?.name!,
-            userId: session?.user?.id,
+            userName,
+            userId,
         };
+
         setValue('comment', '');
         setValue('imageUrl', '');
         mutation.mutate(dataWithEventId);
     };
+
     if (guestRSVPStatus.status === 'DECLINED') {
         return (
             <div className='mt-20'>
@@ -116,7 +121,7 @@ const EventPage = () => {
                         <div className="flex flex-col gap-4">
                             <div className="flex items-center gap-4 mt-4">
                                 <Calendar className="h-6 w-6 text-green-500" />
-                                <span className="text-lg">{formatDate(event?.date!)}</span>
+                                <span className="text-lg">{formatDate(event?.date)}</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Clock className="h-6 w-6 text-violet-500" />
@@ -146,7 +151,7 @@ const EventPage = () => {
                             )}
                         </div>
                         <motion.div className="hover:scale-105 transition-all duration-300 ease-in-out">
-                            <Image className="rounded-[28px]" src={event?.coverImage!} alt="event image" width={400} height={400} />
+                            <Image className="rounded-[28px]" src={event?.coverImage} alt="event image" width={400} height={400} />
                         </motion.div>
                     </div>
                     <div className="mt-10 space-y-4">
