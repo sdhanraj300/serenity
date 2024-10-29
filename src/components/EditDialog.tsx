@@ -18,7 +18,6 @@ const hobbies = [
     'Listening to Music'
 ];
 
-// Zod Schema for validation
 const formSchema = z.object({
     name: z.string().min(5, { message: 'Name must be at least 5 characters' }),
     bio: z.string().min(10, { message: 'Bio must be at least 10 characters long' }),

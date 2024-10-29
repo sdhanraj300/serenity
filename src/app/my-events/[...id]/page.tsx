@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, act } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Calendar, Clock, MapPin, Pencil, Trash, Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,7 +13,13 @@ import { Event, Guest } from '@prisma/client';
 import geminiFn from '@/hooks/geminiFn';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-
+export const formatDate = (dateString: Date) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+};
 const EventDetailsPage = () => {
     const session = useSession();
     const router = useRouter();
@@ -84,16 +90,6 @@ const EventDetailsPage = () => {
 
         fetchEventDetails();
     }, [eventId]);
-    useEffect(() => {
-        console.log('Updated guest status:', guestStatus);
-    }, [guestStatus]);
-    const formatDate = (dateString: Date) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        });
-    };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -218,6 +214,8 @@ const EventDetailsPage = () => {
     }
     if (loading) return <div>Loading...</div>;
     if (!event) return <div>No event found</div>;
+
+    
     const handleInvite = async () => {
         try {
             if (eventData.guestList.length === 0) {
@@ -230,7 +228,6 @@ const EventDetailsPage = () => {
                 guestList: eventData.guestList,
                 eventId: finalEventId,
             };
-            // First Promise: Send invites
             const emailPromise = fetch(`/api/events/${finalEventId}/invite`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -240,7 +237,6 @@ const EventDetailsPage = () => {
                 return res.json();
             });
 
-            // Second Promise: Update event status
             const updatePromise = fetch(`/api/events/${finalEventId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
@@ -250,7 +246,6 @@ const EventDetailsPage = () => {
                 router.push('/my-events');
                 return res.json();
             });
-            //Third promise : Update the rsvp status of the guests
             toast.promise(
                 Promise.all([emailPromise, updatePromise]),
                 {

@@ -10,6 +10,7 @@ import image2 from '../assets/image2.webp';
 import image3 from '../assets/image3.webp';
 import image4 from '../assets/image4.webp';
 import image5 from '../assets/image5.webp';
+import { Slider } from './Slider';
 
 const HeroBanner = () => {
     const { data: session } = useSession();
@@ -49,7 +50,7 @@ const HeroBanner = () => {
     };
 
     return (
-    <motion.div
+        <motion.div
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -234,6 +235,35 @@ const HeroBanner = () => {
                         </motion.div>
                     </div>
                 ))}
+            </motion.div>
+            <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ amount: 0.2 }}
+                variants={{
+                    hidden: { opacity: 0, y: 50 },
+                    visible: {
+                        opacity: 1,
+                        y: 0,
+                        transition: {
+                            duration: 1,
+                            ease: "easeOut",
+                            delay: 0.2,
+                            when: "beforeChildren",
+                            staggerChildren: 0.2,
+                        },
+                    },
+                }}
+                className="flex flex-col mt-10 items-center justify-center">
+                <h1 className='text-3xl font-bold'>Recent Parties</h1>
+                <motion.div
+                    variants={{
+                        hidden: { opacity: 0, scale: 0.8 },
+                        visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
+                    }}
+                    className="">
+                    <Slider />
+                </motion.div>
             </motion.div>
         </motion.div>
     );

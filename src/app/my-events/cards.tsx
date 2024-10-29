@@ -44,7 +44,7 @@ const Cards = ({ event }: { event: Event }) => {
     return (
         <Link href={`/my-events/${event.id}`}
             key={event.id}
-            className="relative border hover:scale-105 transition-all duration-700 cursor-pointer bg-black border-white/10 px-5 py-10 text-center rounded-xl sm:flex-1"
+            className="relative border hover:scale-105  transition-all duration-700 cursor-pointer bg-black border-white/10 px-5 py-10 text-center rounded-[28px] sm:flex-1"
         >
             <motion.div
                 className="absolute inset-0 border-4 border-red-600 rounded-xl"

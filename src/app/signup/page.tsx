@@ -84,7 +84,7 @@ export default function Page() {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className="min-h-screen mt-20 mx-10 rounded-[28px] flex shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/20 backdrop-blur-lg h-full items-center bg-black justify-center p-8">
+            className="min-h-screen mt-20 md:mx-10 mx-4 rounded-[28px] flex shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/20 backdrop-blur-lg h-full items-center bg-black justify-center md:p-8">
             <motion.div
                 variants={slideIn('left', 'spring', 0.1, 0.1)}
                 className="hidden md:block relative">
@@ -93,7 +93,7 @@ export default function Page() {
                     <p className="italic text-5xl font-bold text-white">Serenity</p>
                 </div>
             </motion.div>
-            <div className="w-full max-w-2xl  p-12 rounded-3xl ">
+            <div className="w-full max-w-2xl  p-12 rounded-[28px]">
                 <h3 className="text-3xl font-bold text-center text-white mb-10">Sign Up to your account</h3>
                 <form onSubmit={handleSubmit} method='POST' className="space-y-8">
                     <div className="space-y-6">
@@ -104,7 +104,7 @@ export default function Page() {
                                 type="text"
                                 placeholder="Name"
                                 id="name"
-                                className="w-full h-14 text-lg px-5 mt-2 bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:ring-2 focus:ring-white/50 focus:border-transparent rounded-xl"
+                                className="w-full h-14 text-lg px-5 mt-2 bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:ring-2 focus:ring-white/50 focus:border-transparent rounded-[28px]"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 required
@@ -117,7 +117,7 @@ export default function Page() {
                                 type="email"
                                 placeholder="Email"
                                 id="email"
-                                className="w-full h-14 text-lg px-5 mt-2 bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:ring-2 focus:ring-white/50 focus:border-transparent rounded-xl"
+                                className="w-full h-14 text-lg px-5 mt-2 bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:ring-2 focus:ring-white/50 focus:border-transparent rounded-[28px]"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
@@ -130,7 +130,7 @@ export default function Page() {
                                 type="password"
                                 placeholder="Password"
                                 id="password"
-                                className="w-full h-14 text-lg px-5 mt-2 bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:ring-2 focus:ring-white/50 focus:border-transparent rounded-xl"
+                                className="w-full h-14 text-lg px-5 mt-2 bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:ring-2 focus:ring-white/50 focus:border-transparent rounded-[28px]"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
@@ -139,7 +139,7 @@ export default function Page() {
                     </div>
 
                     {errorMessage && (
-                        <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-white text-lg">
+                        <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-[28px]text-white text-lg">
                             {errorMessage}
                         </div>
                     )}
@@ -147,12 +147,12 @@ export default function Page() {
                     <div className="flex items-center gap-2 md:justify-between pt-4">
                         <Button
                             type="submit"
-                            className="px-8 py-6 text-lg bg-green-400 hover:bg-green-700 text-gray-900 font-semibold rounded-xl transition-all duration-300 backdrop-blur-sm"
+                            className="px-8 py-6 text-lg bg-green-400 hover:bg-green-700 text-gray-900 font-semibold rounded-[28px] transition-all duration-300 backdrop-blur-sm"
                         >
                             Sign Up
                         </Button>
                         <Link href="/login">
-                            <p className="text-white text-lg underline">Already have an account? Login Now</p>
+                            <p className="text-white text-lg">Already have an account? <span className='underline'>Login</span> </p>
                         </Link>
                     </div>
                 </form>
@@ -160,7 +160,7 @@ export default function Page() {
                 <div className="mt-10">
                     <Button
                         onClick={handleGoogleSignIn}
-                        className="w-full px-8 py-6 text-lg bg-blue-500 hover:bg-blue-700 text-white rounded-xl transition-all duration-300 backdrop-blur-sm"
+                        className="w-full px-8 py-6 text-lg rounded-[28px] bg-blue-500 hover:bg-blue-700 text-white rounded-[28px]transition-all duration-300 backdrop-blur-sm"
                     >
                         Sign in with Google
                     </Button>

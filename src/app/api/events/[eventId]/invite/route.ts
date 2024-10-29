@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
             email: guest,
             eventId: event.id,
             status: "PENDING",
+            eventName: event.name,
           },
         });
         guestListForMails.push({ id: res.id, email: res.email });

@@ -1,4 +1,3 @@
-//for specific event
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -10,6 +9,9 @@ export async function GET(
   const findEvent = await prisma.event.findFirst({
     where: {
       id: eventId,
+    },
+    include: {
+      comments: true, //this is very important as mongodb does not automatically include the comments because it is a separate collection and only event is queried by default and comments are not included in the response by default. They are just related to the event.
     },
   });
   if (!findEvent) {
@@ -67,7 +69,7 @@ export async function PATCH(
       guestList,
       invitationSent,
       activities,
-      coverImage
+      coverImage,
     },
   });
   if (!updateEvent) {

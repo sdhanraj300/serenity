@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { FidgetSpinner } from "react-loader-spinner";
 import { Calendar, Edit, Shell, SquareArrowOutUpRight, TreePalm, UserIcon } from "lucide-react";
@@ -12,26 +12,16 @@ import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import useUserData from "@/hooks/useUserData";
+import useInvitedEvents from "@/hooks/useInviteEvents";
 
 const AccountPage = () => {
-    const { data: session, status } = useSession(); // Always call the hook first
+    const { data: session, status } = useSession();
     const router = useRouter();
     const userId = session?.user?.id;
-
-    // Fetch user data
-    const { data: userData, isError, isLoading, error, refetch } = useQuery({
-        queryKey: ["user", userId],
-        queryFn: async () => {
-            const response = await fetch(`/api/user/${userId}`);
-            if (!response.ok) {
-                throw new Error("Failed to fetch user");
-            }
-            return response.json();
-        },
-        enabled: !!userId,
-    });
-
-    // Mutate user data
+    const userEmail = session?.user?.email;
+    const { data: userData, isError: isUserError, isLoading: isUserLoading, error: userError, refetch } = useUserData(userId!);
+    const { data: invitedEvents, isError: isInvitedEventsError, isLoading: isInvitedEventsLoading, error: inviteDataError } = useInvitedEvents(userEmail!);
     const mutation = useMutation({
         mutationFn: async (data: Partial<User>) => {
             const response = await fetch(`/api/user/${userId}`, {
@@ -70,7 +60,6 @@ const AccountPage = () => {
         setIsOpen(false);
     };
 
-    // Motion variants
     const motionVariants = {
         hidden: { opacity: 0, y: 100 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
@@ -78,16 +67,14 @@ const AccountPage = () => {
     const fadeIn = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.5, ease: "easeOut" } } };
     const slideIn = { hidden: { x: -200, opacity: 0 }, visible: { x: 0, opacity: 1, transition: { duration: 0.7 } } };
 
-    // Redirect logic
-    if (status === "loading") return null; // Show nothing while session is loading
+    if (status === "loading") return null;
     if (!session) {
         toast.error("Please login to view this page");
         router.push("/login");
         return null;
     }
 
-    // Loading and error states
-    if (isLoading) {
+    if (isUserLoading || isInvitedEventsLoading) {
         return (
             <div className="flex justify-center items-center h-screen">
                 <FidgetSpinner visible={true} height="80" width="80" ariaLabel="fidget-spinner-loading" />
@@ -95,15 +82,16 @@ const AccountPage = () => {
         );
     }
 
-    if (isError) {
+    if (isInvitedEventsError || isUserError) {
         return (
             <div className="flex justify-center items-center h-screen">
-                <p className="text-red-500">Error: {error.message}</p>
+                <p className="text-red-500">Error:
+                    {isInvitedEventsError ? inviteDataError.message : userError?.message}
+                </p>
             </div>
         );
     }
 
-    // Render account page content
     return (
         <motion.div
             initial="hidden"
@@ -111,7 +99,6 @@ const AccountPage = () => {
             variants={motionVariants}
             className="bg-black/50 relative mt-20 mx-4 px-4 flex h-full pb-10 flex-col items-center pt-20 min-h-screen max-w-5xl md:mx-auto text-white rounded-[28px]"
         >
-            {/* Avatar and Edit Section */}
             <motion.div variants={fadeIn} className="flex flex-col gap-10 items-center justify-center mb-10">
                 <motion.div
                     className="w-[150px] h-[150px] rounded-full overflow-hidden relative"
@@ -129,9 +116,7 @@ const AccountPage = () => {
                 </motion.div>
             </motion.div>
 
-            {/* Profile Details Section */}
             <motion.div className="flex flex-col w-full max-w-3xl gap-8" initial="hidden" animate="visible" variants={fadeIn}>
-                {/* Name Section */}
                 <div className="hover:shadow-violet-400 shadow-sm transition-all duration-700 p-6 rounded-[28px] bg-black opacity-90">
                     <p className="text-4xl font-bold flex gap-2 items-center">
                         <UserIcon size={32} className="inline-block" />
@@ -139,7 +124,6 @@ const AccountPage = () => {
                     </p>
                 </div>
 
-                {/* Bio Section */}
                 <div className="hover:shadow-violet-400 shadow-sm transition-all duration-700 p-6 rounded-[28px] bg-[#000000] opacity-90">
                     <p className="text-xl flex gap-2 font-bold">
                         <Shell size={24} />
@@ -148,7 +132,6 @@ const AccountPage = () => {
                     <p className="text-gray-200 text-md font-normal">{userData?.bio || "Bio not set"}</p>
                 </div>
 
-                {/* Age Section */}
                 <div className="hover:shadow-violet-400 shadow-sm transition-all duration-700 p-6 rounded-[28px] bg-black opacity-90">
                     <p className="text-2xl font-bold flex items-center gap-2">
                         <Calendar size={24} className="inline-block" />
@@ -156,7 +139,6 @@ const AccountPage = () => {
                     </p>
                 </div>
 
-                {/* Hobbies Section */}
                 {userData?.hobbies?.length > 0 && (
                     <div className="hover:shadow-violet-400 shadow-sm transition-all duration-700 p-6 rounded-[28px] bg-black opacity-90">
                         <p className="text-xl font-bold flex gap-2 items-center">
@@ -171,12 +153,11 @@ const AccountPage = () => {
                     </div>
                 )}
 
-                {/* Events Section */}
                 {userData?.events?.length > 0 && (
                     <div className="hover:shadow-violet-400 shadow-sm transition-all duration-700 p-6 rounded-[28px] bg-black opacity-90">
                         <p className="text-xl font-bold flex gap-2 items-center">
                             <Calendar size={24} className="inline-block" />
-                            Events
+                            Hosted Parties
                         </p>
                         <ul className="list-inside list-none text-gray-200">
                             {userData?.events.map(({ id, name }: { id: string, name: string }) => (
@@ -190,9 +171,33 @@ const AccountPage = () => {
                         </ul>
                     </div>
                 )}
+                {invitedEvents ? (
+                    <div className="hover:shadow-violet-400 shadow-sm transition-all duration-700 p-6 rounded-[28px] bg-black opacity-90">
+                        <p className="text-xl font-bold flex gap-2 items-center">
+                            <Calendar size={24} className="inline-block" />
+                            Invited Parties
+                        </p>
+                        <ul className="list-inside list-none text-gray-200">
+                            {Array.isArray(invitedEvents) && invitedEvents.length > 0 ? (
+                                invitedEvents.map(({ id, eventId, eventName }: { id: string, eventId: string, eventName: string }) => (
+                                    <li key={id}>
+                                        <Link href={`event/${eventId}`} className="hover:underline flex justify-between md:justify-between md:w-1/2">
+                                            {eventName}
+                                            <SquareArrowOutUpRight />
+                                        </Link>
+                                    </li>
+                                ))
+                            ) : (
+                                <li className="text-gray-400">
+                                    <Link href={`/event/${invitedEvents?.eventId}`}>{invitedEvents?.eventName}</Link>
+                                </li>
+                            )}
+                        </ul>
+                    </div>
+                ) : <p>No parties found</p>}
+
             </motion.div>
 
-            {/* Edit Dialog */}
             <EditDialog userData={userData} isOpen={isOpen} setIsOpen={setIsOpen} onSubmit={onSubmit} />
         </motion.div>
     );
