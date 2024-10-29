@@ -13,7 +13,7 @@ import { Event, Guest } from '@prisma/client';
 import geminiFn from '@/hooks/geminiFn';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-export const formatDate = (dateString: Date) => {
+const formatDate = (dateString: Date) => {
     return new Date(dateString).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',

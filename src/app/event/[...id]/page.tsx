@@ -7,7 +7,6 @@ import { useParams, useRouter } from 'next/navigation';
 import { FidgetSpinner } from 'react-loader-spinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, Clock, MapPin, Users } from 'lucide-react';
-import { formatDate } from '@/app/my-events/[...id]/page';
 import Image from 'next/image';
 import useGuestStatus from '@/hooks/useGuestStatus';
 import { Comment, Guest } from '@prisma/client';
@@ -20,7 +19,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import useComment from '@/hooks/useComment';
-
+const formatDate = (dateString: Date) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+};
 const formSchema = z.object({
     comment: z.string().min(5, { message: 'Comment must be at least 5 characters' }).optional().default(''),
     imageUrl: z.string().optional().default(''),
